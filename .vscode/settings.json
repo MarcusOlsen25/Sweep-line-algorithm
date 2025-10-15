@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "stddef.h": "c",
+        "bst.h": "c",
+        "stdbool.h": "c",
+        "cstdlib": "c",
+        "geometry.h": "c",
+        "stdio.h": "c",
+        "queue.h": "c",
+        "drawgraph.h": "c",
+        "array": "c",
+        "deque": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "vector": "c",
+        "string_view": "c",
+        "initializer_list": "c"
+    }
+}
