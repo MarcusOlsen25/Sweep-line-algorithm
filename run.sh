@@ -4,7 +4,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-./main
+./main example.txt
 if [ $? -ne 0 ]; then
     echo "Program execution failed."
     exit 1
@@ -15,6 +15,5 @@ if [ $? -ne 0 ]; then
     echo "pdflatex compilation failed."
     exit 1
 fi
-rm output.aux output.log
 
 evince output.pdf &

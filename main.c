@@ -13,9 +13,14 @@ void printVal(StatusData *data) {
     printf("id: %d, %d %d\n", pointData.start->id, pointData.start->point.x, pointData.start->point.y);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
 
-    FILE* file = fopen("input.txt", "r");
+    if (!argc == 2) {
+        printf("Wrong number of arguments\n");
+        return 1;
+    }
+
+    FILE* file = fopen(argv[1], "r");
     if (!file) {
         printf("Error opening file\n");
         return 1;
