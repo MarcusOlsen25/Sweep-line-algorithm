@@ -6,8 +6,12 @@
 
 #include "BST.h"
 
+//Generic binary search tree with no balancing scheme. Data is stored in leaf nodes. Always contains 2n-1 nodes.
+
 //Generic binary search tree containing pointer to root and metadata
 //Takes as parameters a compare function for comparing nodes and size of data inserted
+//Compare function takes a context parameter that allows for dynamic comparison in the sense that the value of a node
+//may change and thereby recomputed based on the context passed to the function
 BST* init_BST(size_t dataSize, compareFunc compare) {
     BST* bst = malloc(sizeof(BST));
     bst->root = NULL;
@@ -70,6 +74,8 @@ Node* getSmallestLeaf(BST* tree) {
     return root;
 }
 
+//Insert new data. The placement is computed based on the compare function and the context. 
+//The value of other nodes are recomputed based on the context
 Node* insert(void* insertData, BST* tree, void* context) {
     // First insertion
     if (tree->size == 0) {
@@ -126,6 +132,7 @@ Node* insert(void* insertData, BST* tree, void* context) {
 
     tree->size += 2;
 
+    //Set new smallest leaf
     if (!tree->compare(newLeaf->data, tree->smallestNode->data, context)) {
         tree->smallestNode = newLeaf;
     }
@@ -133,7 +140,7 @@ Node* insert(void* insertData, BST* tree, void* context) {
     return newLeaf;
 }
 
-
+//Delete deleteNode as well as its parent
 void delete(Node* deleteNode, BST* tree) {
     if (!deleteNode) return;
 
@@ -171,6 +178,20 @@ void delete(Node* deleteNode, BST* tree) {
 
     freeNode(deleteNode);
     freeNode(parent);
+}
+
+void _freeTree(Node* root) {
+    if (!root) return;
+    if (!root->isLeaf) {
+        _freeTree(root->left);
+        _freeTree(root->right);
+    }
+    free(root);
+}
+
+void freeTree(BST* tree) {
+    if (!tree->root) return;
+    _freeTree(tree->root);
 }
 
 void printTree(Node* root, void (*printNode)(void* data)) {

@@ -23,8 +23,6 @@ typedef struct BST {
 
 BST* init_BST(size_t dataSize, compareFunc compare);
 
-static Node* createNode(void* insertData, size_t dataSize);
-
 Node* insert(void* insertData, BST* tree, void* context);
 
 void delete(Node* deleteNode, BST* tree);
@@ -36,5 +34,7 @@ void printBST(BST* tree, void (*printNode)(void* data));
 Node* getSmallestLeaf(BST* tree);
 
 void* getSmallestNodeData(BST* tree);
+
+void freeTree(BST* tree);
 
 #endif

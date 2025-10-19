@@ -32,17 +32,13 @@ EndPoints init_endPoints();
 
 EndPoints* addEndPoint(EndPoints* endPoints, EndPoint* endPoint);
 
-static double computeAngle(Point point, EndPoint* endPoint);
-
-static void determineStartAndEndEndPoint(EndPoint* endPoint1, EndPoint* endPoint2, Point point, BST* tree);
-
-static double euclideanDistance(Point a, Point b);
-
-void computeLineSegmentDirections(EndPoints* endPoints, Point point, BST* tree);
+void computeLineSegmentDirections(EndPoints* endPoints, Point point);
 
 double lineIntersectionDistance(Point point1, Point point2, Point point, double angle);
 
 int compareEndPointAngles(const void* endPoint1, const void* endPoint2);
+
+void freeEndPoints(EndPoints* endPoints);
 
 
 #endif

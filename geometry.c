@@ -16,6 +16,12 @@ EndPoints init_endPoints() {
     return endPoints;
 }
 
+void freeEndPoints(EndPoints* endPoints) {
+    if (endPoints->endPointsArray) {
+        free(endPoints->endPointsArray);
+    }
+}
+
 //Append new EndPoint to the array. If count == capacity, the size doubles.
 EndPoints* addEndPoint(EndPoints* endPoints, EndPoint* endPoint) {
     if (endPoints->count >= endPoints->capacity) {
@@ -57,8 +63,10 @@ double lineIntersectionDistance(Point point1, Point point2, Point point, double 
     double dx = cos(angle);
     double dy = sin(angle);
 
-    double x1 = point1.x, y1 = point1.y;
-    double x2 = point2.x, y2 = point2.y;
+    double x1 = point1.x;
+    double y1 = point1.y;
+    double x2 = point2.x;
+    double y2 = point2.y;
 
     double lengthx = x2 - x1;
     double lengthy = y2 - y1;
@@ -83,7 +91,7 @@ double lineIntersectionDistance(Point point1, Point point2, Point point, double 
 
 //Determine the starting point and ending point of a line segment depending on the angle for each endpoint.
 //If the line is horizontal with the sweep line, the closest point is the start point.
-static void determineStartAndEndEndPoint(EndPoint* endPoint1, EndPoint* endPoint2, Point point, BST* tree) {
+static void determineStartAndEndEndPoint(EndPoint* endPoint1, EndPoint* endPoint2) {
     double angle1 = endPoint1->angle;
     double angle2 = endPoint2->angle;
 
@@ -108,7 +116,7 @@ static void determineStartAndEndEndPoint(EndPoint* endPoint1, EndPoint* endPoint
 
 }
 //Initializes each endpoint with its angle, whether it's astarting point or ending point and its distance from Point
-void computeLineSegmentDirections(EndPoints* endPoints, Point point, BST* tree) {
+void computeLineSegmentDirections(EndPoints* endPoints, Point point) {
     for (int i = 0; i < endPoints->count; i += 2) {
         EndPoint* endPoint1 = &endPoints->endPointsArray[i];
         EndPoint* endPoint2 = &endPoints->endPointsArray[i + 1];
@@ -116,7 +124,7 @@ void computeLineSegmentDirections(EndPoints* endPoints, Point point, BST* tree) 
         endPoint1->distanceFromP = euclideanDistance(point, endPoint1->point);
         endPoint2->angle = computeAngle(point, endPoint2);
         endPoint2->distanceFromP = euclideanDistance(point, endPoint2->point);
-        determineStartAndEndEndPoint(endPoint1, endPoint2, point, tree);
+        determineStartAndEndEndPoint(endPoint1, endPoint2);
     }
 }
 //Compare function passed to the binary search tree.
@@ -128,7 +136,7 @@ int compareEndPointAngles(const void* endPoint1, const void* endPoint2) {
     if (ep1->startPoint > ep2->startPoint) return -1;
     if (ep1->startPoint < ep2->startPoint) return 1;
     if (ep1->startPoint && ep2->startPoint && ep1->distanceFromP < ep2->distanceFromP) return -1;
-    if (ep1->startPoint && ep2->startPoint && ep1->distanceFromP > ep2->distanceFromP) return -1;
+    if (ep1->startPoint && ep2->startPoint && ep1->distanceFromP > ep2->distanceFromP) return 1;
     if (!ep1->startPoint && !ep2->startPoint && ep1->distanceFromP > ep2->distanceFromP) return -1;
     if (!ep1->startPoint && !ep2->startPoint && ep1->distanceFromP < ep2->distanceFromP) return 1;
     return 0;

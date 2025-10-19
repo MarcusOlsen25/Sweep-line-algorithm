@@ -3,18 +3,12 @@
 #include "queue.h"
 #include "geometry.h"
 
-SegmentInfo* init_segmentArray(size_t size) {
-    SegmentInfo* segmentArray = malloc(size);
-    for (int i = 0; i < size; i ++) {
-        segmentArray[i].start = -1;
-    }
-}
-
+//Data inserted into the binary search tree
 StatusData createStatusData(EndPoint* start, EndPoint* end, Point point) {
     return (StatusData){ .start = start, .end = end, .point = point };
 }
 
-void computeEndPointIndices(EndPoints* endPoints, SegmentInfo* segmentArray, Point point) {
+void computeEndPointIndices(EndPoints* endPoints, SegmentInfo* segmentArray) {
     for (int i = 0; i < endPoints->count; i++) {
         EndPoint* p = &endPoints->endPointsArray[i];
         if (p->startPoint) {
@@ -78,7 +72,16 @@ void insertSegmentsCrossingRay(EndPoints* endPoints, SegmentInfo* segmentArray, 
             StatusData newLineSegment = createStatusData(start, end, point);
             Node* node = insert(&newLineSegment, tree, &angle);
             segmentArray[i].node = node;
-            printf("Pre start segment: id: %d, %d %d\n", newLineSegment.start->id, newLineSegment.start->point.x, newLineSegment.start->point.y);
+        }
+    }
+}
+
+void printSegments(SegmentInfo* segmentArray, EndPoints* endPoints) {
+    for (int i = 0; i < endPoints->count / 2; i++) {
+        if (segmentArray[i].segmentIsVisible) {
+            EndPoint start = endPoints->endPointsArray[segmentArray[i].start];
+            EndPoint end = endPoints->endPointsArray[segmentArray[i].end];
+            printf("%d %d %d %d\n", start.point.x, start.point.y, end.point.x, end.point.y);
         }
     }
 }

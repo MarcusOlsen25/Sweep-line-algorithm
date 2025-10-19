@@ -61,7 +61,13 @@ void writeLines(FILE* file, EndPoints* endPoints, SegmentInfo* segmentArray) {
 }
 
 void makeGraph(FILE* file, EndPoints* endPoints, SegmentInfo* segmentArray, Point* point) {
-    int largestCoord = 0;
+    int largestCoord;
+    if (point->x > point->y) {
+        largestCoord = point->x;
+    } else {
+        largestCoord = point->y;
+    }
+    
     for (int i = 0; i < endPoints->count; i++) {
         if (abs(endPoints->endPointsArray[i].point.x) > largestCoord) {
             largestCoord = abs(endPoints->endPointsArray[i].point.x);

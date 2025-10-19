@@ -30,8 +30,6 @@ int main() {
     //Buffer to store input line
     char line[256];
 
-    int largestCoord;
-
     //Read input
     while (fgets(line, sizeof(line), file)) {
         //Add line segment
@@ -50,16 +48,16 @@ int main() {
 
     BST* status = init_BST(sizeof(EndPoint), compareDistance);
 
-    computeLineSegmentDirections(&endPoints, point, status);
+    computeLineSegmentDirections(&endPoints, point);
 
     //Sort array of end points based on angle
     qsort(endPoints.endPointsArray, endPoints.count, sizeof(EndPoint), compareEndPointAngles);
 
     //Array storing the index of endpoints in the original array endPoints
-    SegmentInfo* segmentArray = calloc(endPoints.count / 2 * sizeof(SegmentInfo), sizeof(SegmentInfo));
+    SegmentInfo* segmentArray = malloc(endPoints.count / 2 * sizeof(SegmentInfo));
 
     //Set indices of segmentArray
-    computeEndPointIndices(&endPoints, segmentArray, point);
+    computeEndPointIndices(&endPoints, segmentArray);
 
     //Insert initial line segments that crosses the starting horizontal ray from the point
     insertSegmentsCrossingRay(&endPoints, segmentArray, point, status);
@@ -68,7 +66,6 @@ int main() {
     StatusData* visibleSegment = (StatusData*) getSmallestNodeData(status);
         if (visibleSegment) {
             segmentArray[visibleSegment->start->id].segmentIsVisible = true;
-            printf("Currently visible: id %d, %d %d\n\n", visibleSegment->start->id, visibleSegment->start->point.x, visibleSegment->start->point.y);
         }
     
 
@@ -77,20 +74,15 @@ int main() {
     while (queueHead != queueTail) {
         EndPoint* pop = queueHead;
         if (pop->startPoint) {
-            printf("New Segment: id: %d, %d %d\n", pop->id, pop->point.x, pop->point.y);
             handleNewSegment(status, &endPoints, segmentArray, pop, point);
         } else {
-            printf("End segment: id %d, %d %d\n", pop->id, pop->point.x, pop->point.y);
             handleEndOfSegment(status, segmentArray, pop);
         }
-
         visibleSegment = (StatusData*) getSmallestNodeData(status);
         if (visibleSegment) {
             segmentArray[visibleSegment->start->id].segmentIsVisible = true;
-            printf("Currently visible: id %d, %d %d\n", visibleSegment->start->id, visibleSegment->start->point.x, visibleSegment->start->point.y);
         }
         queueHead++;
-        printBST(status, printVal);
     }
 
     FILE* fileOutput = fopen("output.tex", "w");
@@ -101,6 +93,14 @@ int main() {
     }
     
     makeGraph(fileOutput, &endPoints, segmentArray, &point);
+
+    printSegments(segmentArray, &endPoints);
+
+    freeTree(status);
+
+    freeEndPoints(&endPoints);
+
+    free(segmentArray);
     
     return 0;
 }

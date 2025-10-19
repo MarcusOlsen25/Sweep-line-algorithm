@@ -22,9 +22,7 @@ typedef struct StatusData {
 
 StatusData createStatusData(EndPoint* start, EndPoint* end, Point point);
 
-static double closestPointOnHorizontal(StatusData* line);
-
-void computeEndPointIndices(EndPoints* endPoints, SegmentInfo* segmentArray, Point point);
+void computeEndPointIndices(EndPoints* endPoints, SegmentInfo* segmentArray);
 
 int compareDistance(void* dataNew, void* dataOld, void* context);
 
@@ -33,5 +31,7 @@ void handleNewSegment(BST* bst, EndPoints* endPoints, SegmentInfo* segmentArray,
 void handleEndOfSegment(BST* bst, SegmentInfo* segmentArray, EndPoint* endPoint);
 
 void insertSegmentsCrossingRay(EndPoints* endPoints, SegmentInfo* segmentArray, Point point, BST* tree);
+
+void printSegments(SegmentInfo* segmentArray, EndPoints* endPoints);
 
 #endif
